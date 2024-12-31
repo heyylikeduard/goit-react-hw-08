@@ -51,7 +51,6 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <ContactForm onSubmit={addContact} />
-      <h2>Contacts</h2>
       <SearchBox filter={filter} onFilterChange={setFilter} />
       <ContactList
         contacts={filteredContacts}
