@@ -2,9 +2,14 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { nanoid } from "nanoid";
+import { useDispatch, useSelector } from "react-redux";
+import { addContact } from "../../redux/contactsSlice";
 import styles from "./ContactForm.module.css";
 
-const ContactForm = ({ onSubmit }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector((state) => state.contacts.items);
+
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, "Must be at least 3 characters")
@@ -14,12 +19,23 @@ const ContactForm = ({ onSubmit }) => {
   });
 
   const handleSubmit = ({ name, number }, { resetForm }) => {
+    const normalizedName = name.toLowerCase();
+    const isDuplicate = contacts.some(
+      (contact) => contact.name.toLowerCase() === normalizedName
+    );
+
+    if (isDuplicate) {
+      alert(`${name} is already in contacts!`);
+      return;
+    }
+
     const newContact = {
       id: nanoid(),
       name,
       number,
     };
-    onSubmit(newContact);
+
+    dispatch(addContact(newContact)); // Додаємо контакт
     resetForm();
   };
 
