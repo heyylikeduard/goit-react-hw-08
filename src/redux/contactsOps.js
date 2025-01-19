@@ -2,6 +2,7 @@ import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 // Встановлення базового URL для axios
+const BASE_URL = "https://678a6660dd587da7ac29ffa0.mockapi.io";
 axios.defaults.baseURL = 'https://678a6660dd587da7ac29ffa0.mockapi.io/contacts';
 
 // Операція: отримання списку контактів
@@ -32,13 +33,16 @@ export const addContact = createAsyncThunk(
 
 // Операція: видалення контакту за ID
 export const deleteContact = createAsyncThunk(
-  'contacts/deleteContact',
+  "contacts/deleteContact",
   async (contactId, thunkAPI) => {
     try {
-      const response = await axios.delete(`/${contactId}`);
-      return response.data; // Повертаємо видалений контакт
+      await axios.delete(`${BASE_URL}/contacts/${contactId}`); 
+      return contactId;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message); // Повертаємо текст помилки
+      console.error("Error in deleteContact:", error.message);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
+
+
