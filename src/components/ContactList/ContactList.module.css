@@ -1,10 +1,25 @@
-ul {
-    list-style: none;
-    padding: 0;
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;  
+  gap: 16px;  
+  justify-content: start;
+}
+
+.item {
+  display: flex;
+  flex-direction: column; 
+  width: calc(33.333% - 16px);  
+  box-sizing: border-box;  
+}
+
+@media (max-width: 1024px) {
+  .item {
+    width: calc(50% - 16px);  
   }
-  
-  h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .item {
+    width: 100%;  
   }
-  
+}

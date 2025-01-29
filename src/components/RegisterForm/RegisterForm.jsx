@@ -1,40 +1,44 @@
-import { useDispatch } from 'react-redux';
-import { register } from '../../redux/auth/operations';
-import css from './RegisterForm.module.css';
+import { Field, Form, Formik } from "formik";
+import s from './RegisterForm.module.css'
+import { useDispatch } from "react-redux";
+import { register } from "../../redux/auth/operations";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-export const RegisterForm = () => {
-  const dispatch = useDispatch();
+const RegisterForm = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const handleSubmit = (values, options) => {
+        dispatch(register(values))
+        .unwrap()
+        .then(res => {
+            toast(`Welcome, ${res.user.name}`);
+            navigate('/contacts')
+        }). catch (() => {
+            toast.error('An account with that name or email already exists!')
+        });
+        options.resetForm();
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = e.target;
+    const initialValues = {
+        name: '',
+        email: '',
+        password: '',
+    };
 
-    dispatch(
-      register({
-        name: form.elements.name.value,
-        email: form.elements.email.value,
-        password: form.elements.password.value,
-      })
-    );
-
-    form.reset();
-  };
-
-  return (
-    <form className={css.form} onSubmit={handleSubmit} autoComplete="off">
-      <label className={css.label}>
-        Username
-        <input type="text" name="name" />
-      </label>
-      <label className={css.label}>
-        Email
-        <input type="email" name="email" />
-      </label>
-      <label className={css.label}>
-        Password
-        <input type="password" name="password" />
-      </label>
-      <button type="submit">Register</button>
-    </form>
-  );
+    return (
+        <div className={s.wrapper}>
+            <h2 className={s.title}>Register</h2>
+            <Formik onSubmit={handleSubmit} initialValues={initialValues}>
+                <Form className={s.form}>
+                 <Field name='name' placeholder='Enter name' />
+                 <Field name='email' placeholder='Enter email' />
+                 <Field name='password' type='password' placeholder='Enter pass' />
+                 <button type='submit' className={s.button}>Submit</button>
+                </Form>
+            </Formik>
+        </div>
+    )
 };
+
+export default RegisterForm;
